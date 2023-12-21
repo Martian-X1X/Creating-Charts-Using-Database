@@ -1,48 +1,55 @@
 document.addEventListener('DOMContentLoaded', function () {
-// Gauge Chart
-        var gaugeCtx = document.getElementById('gaugeChart').getContext('2d');
-        var maxGaugeValue = 100; // Maximum value for the gauge
 
-        var gaugeChart = new Chart(gaugeCtx, {
-            type: 'doughnut',
-            data: {
-                datasets: [{
-                    data: [0, maxGaugeValue],
-                    backgroundColor: ['#1abc9c', 'rgba(255, 255, 255, 2)']
-                }]
+
+ const ctx = document.getElementById('gaugeChart').getContext('2d');
+
+    const gaugeChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                ],
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'City Distribution',
             },
-            options: {
-                cutout: '80%',
-                rotation: 0.75 * Math.PI,
-                circumference: 110 * Math.PI,
-                legend: {
-                    display: false
-                },
-                tooltips: {
-                    enabled: false
-                },
-                animation: {
-                    animateRotate: false,
-                    animateScale: true
-                }
-            }
-        });
+        },
+    });
 
-        // Update the gauge reading
-        function updateGaugeReading(value) {
-            document.getElementById('gaugeReading').innerText = value + '%';
-        }
+    function updateGaugeChart() {
+        fetch('data_fetcher.php')
+            .then(response => response.json())
+            .then(data => {
+                const labels = Object.keys(data);
+                const values = Object.values(data);
 
-        // Update gauge initially and every 5 seconds
-        function updateGauge() {
-            var newValue = Math.floor(Math.random() * (maxGaugeValue + 1));
-            gaugeChart.data.datasets[0].data = [newValue, maxGaugeValue - newValue];
-            gaugeChart.update();
-            updateGaugeReading(newValue);
-        }
+                gaugeChart.data.labels = labels;
+                gaugeChart.data.datasets[0].data = values;
 
-        updateGauge();
-        setInterval(updateGauge, 5000);
+                gaugeChart.update();
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
+
+    updateGaugeChart();
+    setInterval(updateGaugeChart, 5000);
+
+
+
+
 
 
     // Line Chart

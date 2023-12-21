@@ -10,16 +10,31 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Function to fetch data for gauge chart based on average salary from employee table
+// Function to fetch data for gauge chart based on number of cities from customer table
 function getGaugeChartData() {
     global $conn;
-    $query = "SELECT AVG(salary) as average_salary FROM employee";
-    $result = $conn->query($query);
-    
+
+    // Count the total number of rows in the customer table
+    $totalRowsQuery = "SELECT COUNT(*) as total_rows FROM customer";
+    $totalRowsResult = $conn->query($totalRowsQuery);
+
+    $totalRows = 0;
+    if ($totalRowsRow = $totalRowsResult->fetch_assoc()) {
+        $totalRows = $totalRowsRow['total_rows'];
+    }
+
+    // Query to get the count of entries for each city
+    $cityCountQuery = "SELECT city, COUNT(*) as city_count FROM customer GROUP BY city";
+    $cityCountResult = $conn->query($cityCountQuery);
+
     $data = [];
 
-    if ($row = $result->fetch_assoc()) {
-        $data['value'] = $row['average_salary'];
+    while ($row = $cityCountResult->fetch_assoc()) {
+        // Calculate the percentage of entries for each city
+        $percentage = ($row['city_count'] / $totalRows) * 100;
+
+        // Store the data for each city
+        $data[$row['city']] = $percentage;
     }
 
     return $data;
