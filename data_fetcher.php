@@ -15,31 +15,36 @@ function getGaugeChartData() {
     global $conn;
 
     // Count the total number of rows in the customer table
-    $totalRowsQuery = "SELECT COUNT(*) as total_rows FROM customer";
-    $totalRowsResult = $conn->query($totalRowsQuery);
+    $totalRowsQuery = $conn->prepare("SELECT COUNT(*) as total_rows FROM customer");
+    $totalRowsQuery->execute();
+    $totalRowsResult = $totalRowsQuery->get_result();
 
     $totalRows = 0;
     if ($totalRowsRow = $totalRowsResult->fetch_assoc()) {
         $totalRows = $totalRowsRow['total_rows'];
     }
 
-    // Query to get the count of entries for each city
-    $cityCountQuery = "SELECT city, COUNT(*) as city_count FROM customer GROUP BY city";
-    $cityCountResult = $conn->query($cityCountQuery);
+    // Check for potential division by zero
+    if ($totalRows > 0) {
+        // Query to get the count of entries for each city
+        $cityCountQuery = "SELECT city, COUNT(*) as city_count FROM customer GROUP BY city";
+        $cityCountResult = $conn->query($cityCountQuery);
 
-    $data = [];
+        $data = [];
 
-    while ($row = $cityCountResult->fetch_assoc()) {
-        // Calculate the percentage of entries for each city
-        $percentage = ($row['city_count'] / $totalRows) * 100;
+        while ($row = $cityCountResult->fetch_assoc()) {
+            // Calculate the percentage of entries for each city
+            $percentage = ($row['city_count'] / $totalRows) * 100;
 
-        // Store the data for each city
-        $data[$row['city']] = $percentage;
+            // Store the data for each city
+            $data[$row['city']] = $percentage;
+        }
+
+        return $data;
+    } else {
+        return [];
     }
-
-    return $data;
 }
-
 
 // Function to fetch data for line chart based on category and quantity from logistic table
 function getLineChartData() {
@@ -78,16 +83,22 @@ function getBarChartData() {
 // Get the graph type from the URL parameter
 $graphType = isset($_GET['graphType']) ? $_GET['graphType'] : '';
 
-// Fetch data based on the specified graph type
-if ($graphType === 'gauge_chart') {
-    $data = getGaugeChartData();
-} elseif ($graphType === 'line_chart') {
-    $data = getLineChartData();
-} elseif ($graphType === 'bar_chart') {
-    $data = getBarChartData();
-} else {
-    // Handle unknown graph types
+// Validate graph type
+$allowedGraphTypes = ['gauge_chart', 'line_chart', 'bar_chart'];
+
+if (!in_array($graphType, $allowedGraphTypes)) {
+    // Handle unknown graph types or set a default type
+    $graphType = 'default_type';
     $data = [];
+} else {
+    // Fetch data based on the specified graph type
+    if ($graphType === 'gauge_chart') {
+        $data = getGaugeChartData();
+    } elseif ($graphType === 'line_chart') {
+        $data = getLineChartData();
+    } elseif ($graphType === 'bar_chart') {
+        $data = getBarChartData();
+    }
 }
 
 // Return data as JSON

@@ -38,6 +38,7 @@ INSERT INTO customer (name,city,phone_number) VALUES
     ('Jamal Bhuiyan','Dhaka', '018747100'),
     ('Rehan Matin','Barishal', '016474100'),
     ('Zawad hussain','Chattogram', '016447100'),
+    ('Alamgir','Chattogram', '015577100'),
     ('Nayla Nuren','Dhaka', '012345678');
 
 -- Table 2

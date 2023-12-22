@@ -36,28 +36,33 @@
     </nav>
 
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-6">
-                <div id="gaugeContainer" class="chart-container">
-                    <canvas id="gaugeChart"></canvas>
-                    <div class="gauge-reading" id="gaugeReading">0%</div>
-                </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <!-- Gauge Chart Container -->
+            <div id="gaugeContainer" class="chart-container">
+                <canvas id="gaugeChart"></canvas>
+                <div class="gauge-reading" id="gaugeReading">0%</div>
             </div>
-            <div class="col-lg-6">
-                <div id="lineChartContainer" class="chart-container">
-                    <canvas id="lineChart" width="200" height="90"></canvas>
-                </div>
-                <div id="barChartContainer" class="chart-container">
-                    <canvas id="barChart" width="200" height="90"></canvas>
-                </div>
+        </div>
+        <div class="col-lg-6">
+            <!-- Line Chart Container -->
+            <div id="lineChartContainer" class="chart-container">
+                <canvas id="lineChart" width="200" height="90"></canvas>
+            </div>
+            <!-- Bar Chart Container -->
+            <div id="barChartContainer" class="chart-container">
+                <canvas id="barChart" width="200" height="90"></canvas>
+            </div>
         </div>
     </div>
-    </div>
+</div>
 
-    <script src="charts.js"></script>
+
+    <script src="Charts.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function updateGaugeChart() {
-        fetch('data_fetcher.php')
+        fetch('data_fetcher.php?graphType=gauge_chart')
             .then(response => response.json())
             .then(data => {
                 const labels = Object.keys(data);
